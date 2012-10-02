@@ -19,7 +19,8 @@
       animation: 'fadeAndPop',                // fade, fadeAndPop, none
       animationSpeed: 300,                    // how fast animtions are
       closeOnBackgroundClick: true,           // if you click background will modal close?
-      dismissModalClass: 'close-reveal-modal' // the class of a button or element that will close an open modal
+      dismissModalClass: 'close-reveal-modal', // the class of a button or element that will close an open modal
+			onclose: function() {}
     };
     var options = $.extend({}, defaults, options);
 
@@ -76,6 +77,7 @@
             }, options.animationSpeed / 2, function () {
               modal.css({'top': topMeasure, 'opacity': 1, 'visibility': 'hidden'});
               unlockModal();
+							closeHandler();
             });
           }
           if (options.animation == "fade") {
@@ -85,11 +87,13 @@
             }, options.animationSpeed, function () {
               modal.css({'opacity': 1, 'visibility': 'hidden', 'top': topMeasure});
               unlockModal();
+							closeHandler();
             });
           }
           if (options.animation == "none") {
             modal.css({'visibility': 'hidden', 'top': topMeasure});
             modalBg.css({'display': 'none'});
+						closeHandler();
           }
         }
         modal.unbind('reveal:close', closeAnimation);
@@ -113,6 +117,12 @@
           modal.trigger('reveal:close');
         }
       });
+
+			function closeHandler(){
+				if(typeof options.onclose == 'function') {
+					options.onclose.call(this);
+				}
+			}
 
       function unlockModal() {
         locked = false;
